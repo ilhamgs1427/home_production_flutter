@@ -4,6 +4,7 @@ class HistoryOrderModel {
   final String idProduct;
   final String namaUser;
   final String namaProduct;
+  final String notelepon;
   final String alamat;
   final String reservasi;
 
@@ -13,6 +14,7 @@ class HistoryOrderModel {
     required this.idProduct,
     required this.namaUser,
     required this.namaProduct,
+    required this.notelepon,
     required this.alamat,
     required this.reservasi,
   });
@@ -24,6 +26,7 @@ class HistoryOrderModel {
       idProduct: data['id_product'],
       namaUser: data['nama_user'],
       namaProduct: data['nama_product'],
+      notelepon: data['phone'],
       alamat: data['alamat'],
       reservasi: data['reservasi'],
     );

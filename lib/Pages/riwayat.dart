@@ -80,6 +80,7 @@ class _riwayatPageState extends State<riwayatPage> {
             return InkWell(
               child: cartRiwayat(
                 NamaLengkapPesanan: x.namaUser,
+                phonePesanan: x.notelepon,
                 AlamatPesanan: x.alamat,
                 TanggalPesanan: x.reservasi,
                 namaproductPesanan: x.namaProduct,
@@ -94,6 +95,7 @@ class _riwayatPageState extends State<riwayatPage> {
 class cartRiwayat extends StatelessWidget {
   final String NamaLengkapPesanan;
   final String AlamatPesanan;
+  final String phonePesanan;
   final String TanggalPesanan;
   final String namaproductPesanan;
   final String IdPesanan;
@@ -101,6 +103,7 @@ class cartRiwayat extends StatelessWidget {
   cartRiwayat({
     required this.NamaLengkapPesanan,
     required this.AlamatPesanan,
+    required this.phonePesanan,
     required this.TanggalPesanan,
     required this.namaproductPesanan,
     required this.IdPesanan,
@@ -148,6 +151,14 @@ class cartRiwayat extends StatelessWidget {
                       children: [
                         Text(
                           "Nama",
+                          style: textTextStyle.copyWith(
+                            fontSize: 11,
+                            color: primaryButtonColor,
+                          ),
+                        ),
+                        SizedBox(height: 1),
+                        Text(
+                          "No Telepon",
                           style: textTextStyle.copyWith(
                             fontSize: 11,
                             color: primaryButtonColor,
@@ -229,6 +240,14 @@ class cartRiwayat extends StatelessWidget {
                             color: primaryButtonColor,
                           ),
                         ),
+                        SizedBox(height: 1),
+                        Text(
+                          ":",
+                          style: textTextStyle.copyWith(
+                            fontSize: 11,
+                            color: primaryButtonColor,
+                          ),
+                        ),
                       ]),
                   SizedBox(width: 5),
                   Column(
@@ -236,6 +255,14 @@ class cartRiwayat extends StatelessWidget {
                       children: [
                         Text(
                           NamaLengkapPesanan,
+                          style: textTextStyle.copyWith(
+                            fontSize: 11,
+                            color: primaryButtonColor,
+                          ),
+                        ),
+                        SizedBox(height: 1),
+                        Text(
+                          phonePesanan,
                           style: textTextStyle.copyWith(
                             fontSize: 11,
                             color: primaryButtonColor,

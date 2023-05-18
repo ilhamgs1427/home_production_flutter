@@ -41,10 +41,9 @@ class _LoginPagesState extends State<LoginPage> {
     String idUser = data['user_id'];
     String name = data['name'];
     String email = data['email'];
-    String phone = data['phone'];
     String createdAt = data['created_at'];
     if (value == 1) {
-      savePref(idUser, name, email, phone, createdAt);
+      savePref(idUser, name, email, createdAt);
       showDialog(
           context: context,
           builder: ((context) => AlertDialog(
@@ -112,14 +111,12 @@ class _LoginPagesState extends State<LoginPage> {
     }
   }
 
-  savePref(String idUser, String name, String email, String phone,
-      String createdAt) async {
+  savePref(String idUser, String name, String email, String createdAt) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
       sharedPreferences.setString(PrefProfile.idUser, idUser);
       sharedPreferences.setString(PrefProfile.name, name);
       sharedPreferences.setString(PrefProfile.email, email);
-      sharedPreferences.setString(PrefProfile.phone, phone);
       sharedPreferences.setString(PrefProfile.createAt, createdAt);
     });
   }
@@ -268,8 +265,9 @@ class _LoginPagesState extends State<LoginPage> {
                             showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                      title: Text("Warning !!"),
-                                      content: Text("Please, enter the fields"),
+                                      title: Text("Perhatian !!"),
+                                      content: Text(
+                                          "Mohon masukkan data dengan benar!"),
                                       actions: [
                                         TextButton(
                                             onPressed: () {

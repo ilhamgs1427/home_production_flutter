@@ -204,38 +204,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
 
-                        // kolom no telepon
-                        SizedBox(height: 15),
-                        Text(
-                          "No Telepon",
-                          style: textTextStyle.copyWith(
-                              fontSize: 12, fontWeight: bold),
-                        ),
-                        SizedBox(height: 10),
-                        Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: whiteColor,
-                          ),
-                          child: TextField(
-                            controller: phoneController,
-                            style: textTextStyle.copyWith(
-                              fontSize: 12,
-                              color: textColor,
-                            ),
-                            keyboardType: TextInputType.phone,
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "08500077889",
-                                hintStyle: textTextStyle.copyWith(
-                                    fontSize: 12,
-                                    color: textColor.withOpacity(0.6)),
-                                contentPadding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 17)),
-                          ),
-                        ),
-
                         //kolom password
                         SizedBox(height: 15),
                         Text(

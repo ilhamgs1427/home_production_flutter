@@ -24,6 +24,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   // produk controller
   final TextEditingController dateController = TextEditingController();
   final TextEditingController alamatController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   // datepicker
   DateTime? _selectedDate;
@@ -65,6 +66,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     final response = await post(urlCheckout, body: {
       "id_user": userID,
       "id_product": widget.productModel.idProduct,
+      "phone": phoneController.text,
       "alamat": alamatController.text,
       "reservasi": _formattedDate,
     });
@@ -266,6 +268,37 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: "Masukkan alamat lengkap",
+                                hintStyle: textTextStyle.copyWith(
+                                    fontSize: 12,
+                                    color: textColor.withOpacity(0.6)),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 17)),
+                          ),
+                        ),
+                        // kolom no telepon
+                        SizedBox(height: 15),
+                        Text(
+                          "No Telepon",
+                          style: textTextStyle.copyWith(
+                              fontSize: 12, fontWeight: bold),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: greyColor.withOpacity(0.1),
+                          ),
+                          child: TextField(
+                            controller: phoneController,
+                            style: textTextStyle.copyWith(
+                              fontSize: 12,
+                              color: textColor,
+                            ),
+                            keyboardType: TextInputType.phone,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "08500077889",
                                 hintStyle: textTextStyle.copyWith(
                                     fontSize: 12,
                                     color: textColor.withOpacity(0.6)),
