@@ -50,7 +50,6 @@ class _SplashScreenState extends State<SplashScreen> {
               title: "Solusi terbaik buat\nlive streaming",
               subtitle1: "nikmati layanan kami",
               subtitle2: "tersedia beberapa paket  \n       murah dan terbaik",
-              child: Container(),
             ),
             ElevatedButton(
               onPressed: () {

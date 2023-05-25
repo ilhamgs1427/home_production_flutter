@@ -143,7 +143,7 @@ class _LoginPagesState extends State<LoginPage> {
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(
-                      height: 64,
+                      height: 30,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,35 +226,20 @@ class _LoginPagesState extends State<LoginPage> {
 
                     //kolom checkbox remember me
                     SizedBox(
-                      height: 20,
+                      height: 10,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              decoration: BoxDecoration(
-                                color: buttonColor,
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                            SizedBox(width: 15),
-                            Text(
-                              "remember me",
-                              style: greyTextStyle.copyWith(fontSize: 12),
-                            )
-                          ],
-                        ),
-                        Text(
-                          "Forgot Password ?",
-                          style: textTextStyle.copyWith(fontSize: 12),
-                        ),
-                      ],
+
+                    Text(
+                      "akun bermasalah?hubungi kami",
+                      style: greyTextStyle.copyWith(fontSize: 10),
                     ),
-                    SizedBox(height: 32),
+
+                    Text(
+                      "HomeProduction@gmail.com",
+                      style: textTextStyle.copyWith(fontSize: 10),
+                    ),
+
+                    SizedBox(height: 20),
                     Container(
                       width: double.infinity,
                       margin: EdgeInsets.symmetric(horizontal: 20),
@@ -295,7 +280,7 @@ class _LoginPagesState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Don't have an account yet?",
+                          "Belum punya akun?",
                           style: secondaryTextStyle.copyWith(fontSize: 12),
                         ),
                         InkWell(

@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:home_production/constans.dart';
 
 class WidgetIlustration extends StatelessWidget {
-  final Widget child;
   final String image;
   final String title;
   final String subtitle1;
   final String subtitle2;
   WidgetIlustration(
-      {required this.child,
-      required this.image,
+      {required this.image,
       required this.title,
       required this.subtitle1,
       required this.subtitle2});

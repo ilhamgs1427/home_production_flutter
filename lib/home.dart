@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:home_production/Pages/beranda.dart';
+import 'package:home_production/Pages/profile.dart';
 import 'package:home_production/Pages/riwayat.dart';
 import 'package:home_production/constans.dart';
 
@@ -27,11 +28,11 @@ class _HomePageState extends State<HomePage> {
       riwayatPage(),
 
       // Menu Profile
-      Center(
-        child: Text("profile"),
-      ),
+      ProfilePage(),
     ];
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Color(0xffE5E5E5),
         body: widgets[currentIndex],

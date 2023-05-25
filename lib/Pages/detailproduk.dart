@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:home_production/Network/Api/url_api.dart';
 import 'package:home_production/Network/Models/pref_profile_model.dart';
 import 'package:home_production/Network/Models/product_model.dart';
@@ -258,9 +259,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           child: TextField(
                             enableInteractiveSelection: true,
                             controller: alamatController,
-                            onSubmitted: (value) {
-                              print(value);
-                            },
+                            maxLines: 4,
+                            keyboardType: TextInputType.multiline,
+                            textInputAction: TextInputAction.newline,
                             style: textTextStyle.copyWith(
                               fontSize: 12,
                               color: textColor,
@@ -296,6 +297,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               color: textColor,
                             ),
                             keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(
+                                  r'[0-9]')), // Hanya angka yang diizinkan
+                            ],
                             decoration: InputDecoration(
                                 border: InputBorder.none,
                                 hintText: "08500077889",
