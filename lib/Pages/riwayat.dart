@@ -1,8 +1,11 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:home_production/Network/Api/url_api.dart';
 import 'package:home_production/Network/Models/history_model.dart';
@@ -12,8 +15,9 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:home_production/Network/Models/pref_profile_model.dart';
 import 'package:home_production/constans.dart';
 import 'package:home_production/widget/widget_ilustration.dart';
-import 'package:http/http.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class riwayatPage extends StatefulWidget {
@@ -38,7 +42,7 @@ class _riwayatPageState extends State<riwayatPage> {
   // get data history
   getHistory() async {
     var urlHistory = Uri.parse(BASEURL.history + userID!);
-    final response = await get(urlHistory);
+    final response = await http.get(urlHistory);
     if (response.statusCode == 200) {
       setState(() {
         final data = jsonDecode(response.body);
@@ -103,6 +107,7 @@ class _riwayatPageState extends State<riwayatPage> {
                     TanggalPesanan: x.reservasi,
                     namaproductPesanan: x.namaProduct,
                     IdPesanan: x.idOrders,
+                    metodepembayaran: x.metodePembayaran,
                   ),
                 );
               }),
@@ -110,13 +115,105 @@ class _riwayatPageState extends State<riwayatPage> {
   }
 }
 
-class cartRiwayat extends StatelessWidget {
+class cartRiwayat extends StatefulWidget {
   final String NamaLengkapPesanan;
   final String AlamatPesanan;
   final String phonePesanan;
   final String TanggalPesanan;
   final String namaproductPesanan;
+  final String metodepembayaran;
   final String IdPesanan;
+
+  cartRiwayat({
+    required this.NamaLengkapPesanan,
+    required this.AlamatPesanan,
+    required this.phonePesanan,
+    required this.TanggalPesanan,
+    required this.namaproductPesanan,
+    required this.IdPesanan,
+    required this.metodepembayaran,
+  });
+
+  @override
+  State<cartRiwayat> createState() => _cartRiwayatState();
+}
+
+class _cartRiwayatState extends State<cartRiwayat> {
+  Future<void> requestStoragePermission() async {
+    // Cek izin akses penyimpanan sebelum membuka file PDF
+    bool hasStoragePermission = await checkStoragePermission();
+    if (hasStoragePermission) {
+      // Lakukan tindakan untuk membuka file PDF
+      getPDF();
+    } else {
+      // Izin akses penyimpanan belum diberikan, minta izin
+      requestStoragePermission();
+    }
+  }
+
+  Future<bool> checkStoragePermission() async {
+    PermissionStatus status = await Permission.storage.status;
+    if (status.isGranted) {
+      // Izin sudah diberikan sebelumnya
+      return true;
+    } else {
+      // Izin belum diberikan
+      return false;
+    }
+  }
+
+  Future<void> postImageName() async {
+    var urlBukti = Uri.parse(BASEURL.transfer);
+
+    try {
+      var response = await http.post(urlBukti, body: {
+        'id_orders': widget.IdPesanan,
+        'buktiName_pembayaran': imagename,
+        'buktiData_pembayaran': imagedata,
+      });
+
+      if (response.statusCode == 200) {
+        // Permintaan POST berhasil
+        print('POST berhasil');
+      } else {
+        // Permintaan POST gagal
+        print('POST gagal dengan kode status: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Terjadi kesalahan saat melakukan permintaan POST
+      print('Terjadi kesalahan: $error');
+    }
+  }
+
+  File? imagepath;
+  String? imagename;
+  String? imagedata;
+  ImagePicker imagePicker = new ImagePicker();
+
+  Future<void> getImage() async {
+    var getimage = await imagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      imagepath = File(getimage!.path);
+      imagename = getimage.path.split('/').last;
+      imagedata = base64Encode(imagepath!.readAsBytesSync());
+      print(imagepath);
+      print(imagename);
+      print(imagedata);
+    });
+  }
+
+  Future<void> uploadImageAndPost() async {
+    await getImage(); // Jalankan metode getImage() terlebih dahulu untuk mendapatkan gambar
+
+    if (imagename != null) {
+      await postImageName(); // Jika imagename tidak null, jalankan metode postImageName()
+    } else {
+      print("error");
+    }
+  }
+
+  // method upload bukti pembayaran
 
   void getPDF() async {
     // buat class pdf
@@ -245,31 +342,31 @@ class cartRiwayat extends StatelessWidget {
                           pw.Column(
                               crossAxisAlignment: pw.CrossAxisAlignment.start,
                               children: [
-                                pw.Text(NamaLengkapPesanan,
+                                pw.Text(widget.NamaLengkapPesanan,
                                     style: pw.TextStyle(
                                       fontSize: 11,
                                       font: dataText,
                                     )),
                                 pw.SizedBox(height: 10),
-                                pw.Text(phonePesanan,
+                                pw.Text(widget.phonePesanan,
                                     style: pw.TextStyle(
                                       fontSize: 11,
                                       font: dataText,
                                     )),
                                 pw.SizedBox(height: 10),
-                                pw.Text(TanggalPesanan,
+                                pw.Text(widget.TanggalPesanan,
                                     style: pw.TextStyle(
                                       fontSize: 11,
                                       font: dataText,
                                     )),
                                 pw.SizedBox(height: 10),
-                                pw.Text(namaproductPesanan,
+                                pw.Text(widget.namaproductPesanan,
                                     style: pw.TextStyle(
                                       fontSize: 11,
                                       font: dataText,
                                     )),
                                 pw.SizedBox(height: 10),
-                                pw.Text(IdPesanan,
+                                pw.Text(widget.IdPesanan,
                                     style: pw.TextStyle(
                                       fontSize: 11,
                                       font: dataText,
@@ -283,7 +380,7 @@ class cartRiwayat extends StatelessWidget {
                               font: dataText,
                             )),
                         pw.SizedBox(height: 10),
-                        pw.Text(AlamatPesanan,
+                        pw.Text(widget.AlamatPesanan,
                             style: pw.TextStyle(
                               fontSize: 11,
                               font: dataText,
@@ -335,21 +432,12 @@ class cartRiwayat extends StatelessWidget {
     print(file.path);
   }
 
-  cartRiwayat({
-    required this.NamaLengkapPesanan,
-    required this.AlamatPesanan,
-    required this.phonePesanan,
-    required this.TanggalPesanan,
-    required this.namaproductPesanan,
-    required this.IdPesanan,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(horizontal: 2),
-      height: 180,
+      height: 230,
       child: Stack(
         children: [
           Positioned(
@@ -357,8 +445,8 @@ class cartRiwayat extends StatelessWidget {
             left: 23,
             child: Material(
               child: Container(
-                height: 150.0,
-                width: 320.0,
+                height: 200.0,
+                width: 350.0,
                 decoration: BoxDecoration(
                   color: whiteColor,
                   borderRadius: BorderRadius.circular(5.0),
@@ -377,8 +465,8 @@ class cartRiwayat extends StatelessWidget {
             top: 30,
             left: 40,
             child: Container(
-              height: 150,
-              width: 250,
+              height: 300,
+              width: 280,
               child: Row(
                 children: [
                   Column(
@@ -431,11 +519,26 @@ class cartRiwayat extends StatelessWidget {
                             color: primaryButtonColor,
                           ),
                         ),
+                        Text(
+                          "Pembayaran",
+                          style: textTextStyle.copyWith(
+                            fontSize: 11,
+                            color: primaryButtonColor,
+                          ),
+                        ),
                       ]),
                   SizedBox(width: 5),
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          ":",
+                          style: textTextStyle.copyWith(
+                            fontSize: 11,
+                            color: primaryButtonColor,
+                          ),
+                        ),
+                        SizedBox(height: 1),
                         Text(
                           ":",
                           style: textTextStyle.copyWith(
@@ -490,7 +593,7 @@ class cartRiwayat extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            NamaLengkapPesanan,
+                            widget.NamaLengkapPesanan,
                             style: textTextStyle.copyWith(
                               fontSize: 11,
                               color: primaryButtonColor,
@@ -498,7 +601,7 @@ class cartRiwayat extends StatelessWidget {
                           ),
                           SizedBox(height: 1),
                           Text(
-                            phonePesanan,
+                            widget.phonePesanan,
                             style: textTextStyle.copyWith(
                               fontSize: 11,
                               color: primaryButtonColor,
@@ -506,7 +609,7 @@ class cartRiwayat extends StatelessWidget {
                           ),
                           SizedBox(height: 1),
                           Text(
-                            AlamatPesanan,
+                            widget.AlamatPesanan,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: textTextStyle.copyWith(
@@ -516,7 +619,7 @@ class cartRiwayat extends StatelessWidget {
                           ),
                           SizedBox(height: 1),
                           Text(
-                            TanggalPesanan,
+                            widget.TanggalPesanan,
                             style: textTextStyle.copyWith(
                               fontSize: 11,
                               color: primaryButtonColor,
@@ -524,7 +627,7 @@ class cartRiwayat extends StatelessWidget {
                           ),
                           SizedBox(height: 1),
                           Text(
-                            namaproductPesanan,
+                            widget.namaproductPesanan,
                             style: textTextStyle.copyWith(
                               fontSize: 11,
                               color: primaryButtonColor,
@@ -532,7 +635,15 @@ class cartRiwayat extends StatelessWidget {
                           ),
                           SizedBox(height: 1),
                           Text(
-                            IdPesanan,
+                            widget.IdPesanan,
+                            style: textTextStyle.copyWith(
+                              fontSize: 11,
+                              color: primaryButtonColor,
+                            ),
+                          ),
+                          SizedBox(height: 1),
+                          Text(
+                            widget.metodepembayaran,
                             style: textTextStyle.copyWith(
                               fontSize: 11,
                               color: primaryButtonColor,
@@ -546,10 +657,67 @@ class cartRiwayat extends StatelessWidget {
           ),
           Positioned(
             bottom: 20,
-            left: 275,
+            left: 35,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: () => uploadImageAndPost(),
+                  child: Text(
+                    'Upload',
+                    style: textTextStyle.copyWith(
+                      fontSize: 12,
+                      color: whiteColor,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: primaryButtonColor,
+                  ),
+                ),
+                SizedBox(width: 10),
+                imagepath != null
+                    ? Text(
+                        "berhasil",
+                        style: textTextStyle.copyWith(
+                          fontSize: 12,
+                        ),
+                      )
+                    : Text(
+                        'Upload Transfer',
+                        style: textTextStyle.copyWith(
+                          fontSize: 12,
+                        ),
+                      ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 168,
+            left: 308,
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(50),
+              ),
+              child: ElevatedButton(
+                onPressed: () => null,
+                style: ElevatedButton.styleFrom(
+                  primary: primaryButtonColor,
+                ),
+                child: Icon(
+                  Icons.close,
+                  size: 18,
+                  color: whiteColor,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 20,
+            left: 300,
             child: ElevatedButton(
-              onPressed: () => getPDF(),
+              onPressed: () => requestStoragePermission(),
               style: ElevatedButton.styleFrom(
+                fixedSize: Size(10, 5),
                 primary: primaryButtonColor,
               ),
               child: Text(

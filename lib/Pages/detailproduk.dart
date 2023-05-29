@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:home_production/Network/Api/url_api.dart';
@@ -12,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:home_production/home.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 class ProductDetailsView extends StatefulWidget {
   final ProductModel productModel;
@@ -26,6 +26,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController alamatController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
+
+  String selectedPaymentMethod = "";
 
   // datepicker
   DateTime? _selectedDate;
@@ -62,6 +64,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     });
   }
 
+  // post checkout
   checkout() async {
     var urlCheckout = Uri.parse(BASEURL.checkout);
     final response = await post(urlCheckout, body: {
@@ -70,6 +73,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       "phone": phoneController.text,
       "alamat": alamatController.text,
       "reservasi": _formattedDate,
+      "metode_pembayaran": selectedPaymentMethod,
+      // "bukti_pembayaran": imagename,
     });
     final data = jsonDecode(response.body);
     int value = data['value'];
@@ -145,6 +150,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       setState(() {});
     }
   }
+
+  // upload bukti transfer
 
   @override
   void initState() {
@@ -312,12 +319,46 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           ),
                         ),
                         SizedBox(height: 15),
+
+                        Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: DropdownSearch<String>(
+                              popupProps: PopupProps.menu(
+                                showSelectedItems: true,
+                              ),
+                              items: [
+                                "COD(Cash On Delivery)",
+                                "Bank Transfer",
+                              ],
+                              dropdownDecoratorProps: DropDownDecoratorProps(
+                                dropdownSearchDecoration: InputDecoration(
+                                  labelText: "metode pembayaran",
+                                  hintText: "pilih metode pembayaran...",
+                                  labelStyle: textTextStyle.copyWith(
+                                    fontSize: 12,
+                                    fontWeight: bold,
+                                  ),
+                                  hintStyle: textTextStyle.copyWith(
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedPaymentMethod =
+                                      value!; // Menyimpan value dropdown ke dalam variabel selectedPaymentMethod
+                                });
+                              },
+                            )),
+
+                        SizedBox(height: 15),
                         Text(
                           "Pilih Jadwal Reservasi",
                           style: textTextStyle.copyWith(
                               fontSize: 12, fontWeight: bold),
                         ),
                         SizedBox(height: 15),
+                        // pilih tanggal
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
