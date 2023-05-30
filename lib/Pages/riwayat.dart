@@ -1,10 +1,10 @@
-// ignore_for_file: must_be_immutable
-
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:home_production/home.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:open_file/open_file.dart';
 import 'package:home_production/Network/Api/url_api.dart';
@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path/path.dart' as path;
 
 class riwayatPage extends StatefulWidget {
   riwayatPage({super.key});
@@ -108,6 +109,7 @@ class _riwayatPageState extends State<riwayatPage> {
                     namaproductPesanan: x.namaProduct,
                     IdPesanan: x.idOrders,
                     metodepembayaran: x.metodePembayaran,
+                    buktipembayaran: x.buktiTransfer,
                   ),
                 );
               }),
@@ -123,6 +125,7 @@ class cartRiwayat extends StatefulWidget {
   final String namaproductPesanan;
   final String metodepembayaran;
   final String IdPesanan;
+  final String buktipembayaran;
 
   cartRiwayat({
     required this.NamaLengkapPesanan,
@@ -132,6 +135,7 @@ class cartRiwayat extends StatefulWidget {
     required this.namaproductPesanan,
     required this.IdPesanan,
     required this.metodepembayaran,
+    required this.buktipembayaran,
   });
 
   @override
@@ -151,6 +155,77 @@ class _cartRiwayatState extends State<cartRiwayat> {
     }
   }
 
+  dialogDelete() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: whiteColor,
+            title: Text(
+              "Perhatian",
+              style: textTextStyle.copyWith(
+                fontSize: 18,
+                color: primaryButtonColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content:
+                Text("Apakah kamu yakin untuk menghapus riwayat pesananmu ini?",
+                    style: textTextStyle.copyWith(
+                      fontSize: 14,
+                      color: primaryButtonColor,
+                    )),
+            actions: [
+              InkWell(
+                onTap: () {
+                  deleteRiwayat();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    (route) => false,
+                  );
+                },
+                child: Text(
+                  "Iya",
+                  style: textTextStyle.copyWith(
+                    fontSize: 12,
+                    color: primaryButtonColor,
+                  ),
+                ),
+              ),
+              InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Tidak",
+                    style: textTextStyle.copyWith(
+                      fontSize: 12,
+                      color: primaryButtonColor,
+                    ),
+                  )),
+            ],
+          );
+        });
+  }
+
+  //method delete riwayat
+  Future<void> deleteRiwayat() async {
+    Uri deleteRiwayatUrl = Uri.parse(BASEURL.deleteRiwayat);
+    final response = await http
+        .post(deleteRiwayatUrl, body: {"id_orders": widget.IdPesanan});
+    final data = jsonDecode(response.body);
+    int value = data['value'];
+    String pesan = data['message'];
+    if (value == 1) {
+      setState(() {
+        print(pesan);
+      });
+    } else {
+      print(pesan);
+    }
+  }
+
   Future<bool> checkStoragePermission() async {
     PermissionStatus status = await Permission.storage.status;
     if (status.isGranted) {
@@ -162,59 +237,60 @@ class _cartRiwayatState extends State<cartRiwayat> {
     }
   }
 
-  Future<void> postImageName() async {
-    var urlBukti = Uri.parse(BASEURL.transfer);
-
+  //upload image ke api
+  PostImage() async {
     try {
-      var response = await http.post(urlBukti, body: {
-        'id_orders': widget.IdPesanan,
-        'buktiName_pembayaran': imagename,
-        'buktiData_pembayaran': imagedata,
-      });
-
-      if (response.statusCode == 200) {
-        // Permintaan POST berhasil
-        print('POST berhasil');
+      var stream = http.ByteStream(_imageFile!.openRead());
+      var length = await _imageFile!.length();
+      var uri = Uri.parse(BASEURL.transfer);
+      var request = http.MultipartRequest("POST", uri);
+      request.fields['id_orders'] = widget.IdPesanan;
+      request.files.add(http.MultipartFile("bukti_pembayaran", stream, length,
+          filename: path.basename(_imageFile!.path)));
+      var response = await request.send();
+      if (response.statusCode > 2) {
+        print("image upload");
       } else {
-        // Permintaan POST gagal
-        print('POST gagal dengan kode status: ${response.statusCode}');
+        print("image failed");
       }
-    } catch (error) {
-      // Terjadi kesalahan saat melakukan permintaan POST
-      print('Terjadi kesalahan: $error');
+    } catch (e) {
+      debugPrint("Error $e");
+    }
+
+    @override
+    dynamic noSuchMethod(Invocation invocation) =>
+        super.noSuchMethod(invocation);
+  }
+
+  //get image
+  File? _imageFile;
+
+  Future<void> getImage() async {
+    var image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxHeight: 1920,
+      maxWidth: 1080,
+    );
+
+    if (image != null) {
+      setState(() {
+        _imageFile = File(image.path);
+      });
     }
   }
 
-  File? imagepath;
-  String? imagename;
-  String? imagedata;
-  ImagePicker imagePicker = new ImagePicker();
-
-  Future<void> getImage() async {
-    var getimage = await imagePicker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      imagepath = File(getimage!.path);
-      imagename = getimage.path.split('/').last;
-      imagedata = base64Encode(imagepath!.readAsBytesSync());
-      print(imagepath);
-      print(imagename);
-      print(imagedata);
-    });
-  }
-
+  // method get and post image
   Future<void> uploadImageAndPost() async {
     await getImage(); // Jalankan metode getImage() terlebih dahulu untuk mendapatkan gambar
 
-    if (imagename != null) {
-      await postImageName(); // Jika imagename tidak null, jalankan metode postImageName()
+    if (_imageFile != null) {
+      await PostImage(); // Jika imagename tidak null, jalankan metode postImageName()
     } else {
       print("error");
     }
   }
 
-  // method upload bukti pembayaran
-
+  // method PDF
   void getPDF() async {
     // buat class pdf
     final pdf = pw.Document();
@@ -437,7 +513,7 @@ class _cartRiwayatState extends State<cartRiwayat> {
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(horizontal: 2),
-      height: 230,
+      height: 270,
       child: Stack(
         children: [
           Positioned(
@@ -445,7 +521,7 @@ class _cartRiwayatState extends State<cartRiwayat> {
             left: 23,
             child: Material(
               child: Container(
-                height: 200.0,
+                height: 240.0,
                 width: 350.0,
                 decoration: BoxDecoration(
                   color: whiteColor,
@@ -519,8 +595,17 @@ class _cartRiwayatState extends State<cartRiwayat> {
                             color: primaryButtonColor,
                           ),
                         ),
+                        SizedBox(height: 1),
                         Text(
                           "Pembayaran",
+                          style: textTextStyle.copyWith(
+                            fontSize: 11,
+                            color: primaryButtonColor,
+                          ),
+                        ),
+                        SizedBox(height: 1),
+                        Text(
+                          "Bukti(Transfer)",
                           style: textTextStyle.copyWith(
                             fontSize: 11,
                             color: primaryButtonColor,
@@ -531,6 +616,14 @@ class _cartRiwayatState extends State<cartRiwayat> {
                   Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Text(
+                          ":",
+                          style: textTextStyle.copyWith(
+                            fontSize: 11,
+                            color: primaryButtonColor,
+                          ),
+                        ),
+                        SizedBox(height: 1),
                         Text(
                           ":",
                           style: textTextStyle.copyWith(
@@ -644,6 +737,16 @@ class _cartRiwayatState extends State<cartRiwayat> {
                           SizedBox(height: 1),
                           Text(
                             widget.metodepembayaran,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            style: textTextStyle.copyWith(
+                              fontSize: 11,
+                              color: primaryButtonColor,
+                            ),
+                          ),
+                          SizedBox(height: 1),
+                          Text(
+                            widget.buktipembayaran,
                             style: textTextStyle.copyWith(
                               fontSize: 11,
                               color: primaryButtonColor,
@@ -656,7 +759,7 @@ class _cartRiwayatState extends State<cartRiwayat> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            bottom: 13,
             left: 35,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -675,7 +778,7 @@ class _cartRiwayatState extends State<cartRiwayat> {
                   ),
                 ),
                 SizedBox(width: 10),
-                imagepath != null
+                _imageFile != null
                     ? Text(
                         "berhasil",
                         style: textTextStyle.copyWith(
@@ -692,14 +795,16 @@ class _cartRiwayatState extends State<cartRiwayat> {
             ),
           ),
           Positioned(
-            bottom: 168,
+            bottom: 208,
             left: 308,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(50),
               ),
               child: ElevatedButton(
-                onPressed: () => null,
+                onPressed: () {
+                  dialogDelete();
+                },
                 style: ElevatedButton.styleFrom(
                   primary: primaryButtonColor,
                 ),
@@ -712,7 +817,7 @@ class _cartRiwayatState extends State<cartRiwayat> {
             ),
           ),
           Positioned(
-            bottom: 20,
+            bottom: 13,
             left: 300,
             child: ElevatedButton(
               onPressed: () => requestStoragePermission(),

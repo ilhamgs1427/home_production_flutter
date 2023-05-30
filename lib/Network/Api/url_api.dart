@@ -10,4 +10,6 @@ class BASEURL {
       "http://$ipAddress/home_productionDB/get_history.php?id_user=";
   static String transfer =
       "http://$ipAddress/home_productionDB/bukti_transfer.php";
+  static String deleteRiwayat =
+      "http://$ipAddress/home_productionDB/delete_riwayat.php";
 }

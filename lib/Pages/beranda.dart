@@ -249,7 +249,7 @@ class Menuproduk extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: NetworkImage(imageProduct),
+                      image: AssetImage('assets/images/' + imageProduct),
                     ),
                   ),
                 ),

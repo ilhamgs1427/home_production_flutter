@@ -33,6 +33,59 @@ class _ProfilePageState extends State<ProfilePage> {
         MaterialPageRoute(builder: (context) => LoginPage()), (route) => false);
   }
 
+  dialogSignOut() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: whiteColor,
+            title: Text(
+              "Perhatian",
+              style: textTextStyle.copyWith(
+                fontSize: 18,
+                color: primaryButtonColor,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            content: Text("Apakah kamu yakin untuk keluar akun ini?",
+                style: textTextStyle.copyWith(
+                  fontSize: 14,
+                  color: primaryButtonColor,
+                )),
+            actions: [
+              InkWell(
+                onTap: () {
+                  signOut();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false,
+                  );
+                },
+                child: Text(
+                  "Iya",
+                  style: textTextStyle.copyWith(
+                    fontSize: 12,
+                    color: primaryButtonColor,
+                  ),
+                ),
+              ),
+              InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Tidak",
+                    style: textTextStyle.copyWith(
+                      fontSize: 12,
+                      color: primaryButtonColor,
+                    ),
+                  )),
+            ],
+          );
+        });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -48,13 +101,12 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Text('My Profile'),
         actions: [
           InkWell(
-            onTap: () {},
             child: Container(
               padding: EdgeInsets.only(right: kDefaultPadding / 2),
               child: Row(children: [
                 InkWell(
                     onTap: () {
-                      signOut();
+                      dialogSignOut();
                     },
                     child: Icon(Icons.logout_sharp)),
                 kHalfSizedBox,
@@ -96,7 +148,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      fullname!,
+                      fullname?.toString() ?? '',
                       style: Theme.of(context).textTheme.subtitle1!.copyWith(
                             color: whiteColor,
                           ),
@@ -117,15 +169,15 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(height: 10),
           ProfileDetailColumn(
             title: 'Nama Lengkap',
-            value: fullname!,
+            value: fullname?.toString() ?? '',
           ),
           ProfileDetailColumn(
             title: 'Email',
-            value: email!,
+            value: email?.toString() ?? '',
           ),
           ProfileDetailColumn(
             title: 'Tanggal Bergabung ',
-            value: createdDate!,
+            value: createdDate?.toString() ?? '',
           ),
         ],
       ),

@@ -49,16 +49,28 @@ class _SplashScreenState extends State<SplashScreen> {
               image: 'assets/images/1.jpg',
               title: "Solusi terbaik buat\nlive streaming",
               subtitle1: "nikmati layanan kami",
-              subtitle2: "tersedia beberapa paket  \n       murah dan terbaik",
+              subtitle2:
+                  "   tersedia beberapa paket  \n         murah dan terbaik",
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => LoginPage()));
-              },
-              child: Text("GET STARTED"),
-              style: ElevatedButton.styleFrom(
-                  primary: primaryButtonColor, shape: RoundedRectangleBorder()),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: primaryButtonColor,
+                ),
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (route) => false,
+                  );
+                },
+                child: Text(
+                  "RESERVASI SEKARANG",
+                  style: whiteTextStyle.copyWith(fontWeight: bold),
+                ),
+              ),
             ),
           ],
         ),

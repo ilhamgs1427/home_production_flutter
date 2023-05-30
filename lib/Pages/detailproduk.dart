@@ -183,7 +183,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           Container(
               padding: const EdgeInsets.only(bottom: 30),
               width: double.infinity,
-              child: Image.network(widget.productModel.imageProduct)),
+              child: Image.asset(
+                  'assets/images/' + widget.productModel.imageProduct)),
           Container(
             child: Stack(
               children: [
