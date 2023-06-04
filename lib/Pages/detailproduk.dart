@@ -68,11 +68,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   checkout() async {
     var urlCheckout = Uri.parse(BASEURL.checkout);
     final response = await post(urlCheckout, body: {
-      "id_user": userID,
-      "id_product": widget.productModel.idProduct,
+      "user_id": userID,
+      "paket": widget.productModel.nameProduct,
       "phone": phoneController.text,
-      "alamat": alamatController.text,
-      "reservasi": _formattedDate,
+      "message": alamatController.text,
+      "date": _formattedDate,
       "metode_pembayaran": selectedPaymentMethod,
       // "bukti_pembayaran": imagename,
     });

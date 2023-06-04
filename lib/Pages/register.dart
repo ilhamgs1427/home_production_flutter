@@ -44,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
     var registerUrl = Uri.parse(BASEURL.apiRegister);
 
     final response = await post(registerUrl, body: {
-      "fullname": fullNameController.text,
+      "name": fullNameController.text,
       "email": emailController.text,
       "password": passwordController.text,
     });

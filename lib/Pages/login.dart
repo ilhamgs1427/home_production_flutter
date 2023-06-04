@@ -38,7 +38,7 @@ class _LoginPagesState extends State<LoginPage> {
     final data = jsonDecode(response.body);
     int value = data['value'];
     String message = data['message'];
-    String idUser = data['user_id'];
+    String idUser = data['id'];
     String name = data['name'];
     String email = data['email'];
     String createdAt = data['created_at'];

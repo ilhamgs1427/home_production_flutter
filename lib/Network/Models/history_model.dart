@@ -1,7 +1,6 @@
 class HistoryOrderModel {
   final String idOrders;
   final String idUser;
-  final String idProduct;
   final String namaUser;
   final String namaProduct;
   final String notelepon;
@@ -13,7 +12,6 @@ class HistoryOrderModel {
   HistoryOrderModel({
     required this.idOrders,
     required this.idUser,
-    required this.idProduct,
     required this.namaUser,
     required this.namaProduct,
     required this.notelepon,
@@ -25,14 +23,13 @@ class HistoryOrderModel {
 
   factory HistoryOrderModel.fromJson(Map<String, dynamic> data) {
     return HistoryOrderModel(
-        idOrders: data['id_orders'],
-        idUser: data['id_user'],
-        idProduct: data['id_product'],
-        namaUser: data['nama_user'],
-        namaProduct: data['nama_product'],
+        idOrders: data['id'],
+        idUser: data['user_id'],
+        namaUser: data['name'],
+        namaProduct: data['paket'],
         notelepon: data['phone'],
-        alamat: data['alamat'],
-        reservasi: data['reservasi'],
+        alamat: data['message'],
+        reservasi: data['date'],
         metodePembayaran: data['metode_pembayaran'],
         buktiTransfer: data['bukti_pembayaran']);
   }
