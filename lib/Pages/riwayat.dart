@@ -75,7 +75,7 @@ class _riwayatPageState extends State<riwayatPage> {
         backgroundColor: primaryButtonColor,
         centerTitle: true,
         title: Text(
-          "Riwayat resevervasi",
+          "Riwayat reservasi",
           style: whiteTextStyle.copyWith(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -88,9 +88,9 @@ class _riwayatPageState extends State<riwayatPage> {
                 padding: EdgeInsets.symmetric(horizontal: 24),
                 child: WidgetIlustration(
                   image: "assets/images/1.jpg",
-                  subtitle1: "You dont have history order",
-                  subtitle2: "lets shopping now",
-                  title: "Oops, there are no history order",
+                  subtitle1: "reservasi dengan mudah di aplikasi kami",
+                  subtitle2: "Reservasi Sekarang",
+                  title: "Oops,Anda belum pernah reservasi",
                 ),
               ),
             )
