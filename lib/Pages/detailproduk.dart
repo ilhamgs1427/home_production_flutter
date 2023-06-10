@@ -27,7 +27,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   final TextEditingController alamatController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
 
-  String selectedPaymentMethod = "";
+  String? selectedPaymentMethod;
 
   // datepicker
   DateTime? _selectedDate;

@@ -1,5 +1,5 @@
 class HistoryOrderModel {
-  final String idOrders;
+  final int idOrders;
   final String idUser;
   final String namaUser;
   final String namaProduct;

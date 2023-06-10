@@ -38,12 +38,12 @@ class _LoginPagesState extends State<LoginPage> {
     final data = jsonDecode(response.body);
     int value = data['value'];
     String message = data['message'];
-    String idUser = data['id'];
+    int idUser = data['id'];
     String name = data['name'];
     String email = data['email'];
     String createdAt = data['created_at'];
     if (value == 1) {
-      savePref(idUser, name, email, createdAt);
+      savePref(idUser.toString(), name, email, createdAt);
       showDialog(
           context: context,
           builder: ((context) => AlertDialog(

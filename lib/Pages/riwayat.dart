@@ -107,7 +107,7 @@ class _riwayatPageState extends State<riwayatPage> {
                     AlamatPesanan: x.alamat,
                     TanggalPesanan: x.reservasi,
                     namaproductPesanan: x.namaProduct,
-                    IdPesanan: x.idOrders,
+                    IdPesanan: x.idOrders.toString(),
                     metodepembayaran: x.metodePembayaran,
                     buktipembayaran: x.buktiTransfer,
                   ),
@@ -211,18 +211,24 @@ class _cartRiwayatState extends State<cartRiwayat> {
 
   //method delete riwayat
   Future<void> deleteRiwayat() async {
-    Uri deleteRiwayatUrl = Uri.parse(BASEURL.deleteRiwayat);
-    final response = await http
-        .post(deleteRiwayatUrl, body: {"id_orders": widget.IdPesanan});
-    final data = jsonDecode(response.body);
-    int value = data['value'];
-    String pesan = data['message'];
-    if (value == 1) {
-      setState(() {
+    try {
+      Uri deleteRiwayatUrl = Uri.parse(BASEURL.deleteRiwayat);
+      final response = await http
+          .post(deleteRiwayatUrl, body: {"id_orders": widget.IdPesanan});
+
+      final data = jsonDecode(response.body);
+      int value = data['value'];
+      String pesan = data['message'];
+
+      if (value == 1) {
+        setState(() {
+          print(pesan);
+        });
+      } else {
         print(pesan);
-      });
-    } else {
-      print(pesan);
+      }
+    } catch (error) {
+      print("Terjadi kesalahan saat menghapus riwayat: $error");
     }
   }
 
@@ -254,7 +260,7 @@ class _cartRiwayatState extends State<cartRiwayat> {
         print("image failed");
       }
     } catch (e) {
-      debugPrint("Error $e");
+      print("Error $e");
     }
 
     @override

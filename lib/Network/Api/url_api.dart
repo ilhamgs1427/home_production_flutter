@@ -1,12 +1,10 @@
 class BASEURL {
-  static String ipAddress = "192.168.1.10";
-  static String apiRegister = "http://$ipAddress/streaming_DB/register_api.php";
-  static String apiLogin = "http://$ipAddress/streaming_DB/login_api.php";
-  static String getProduct = "http://$ipAddress/streaming_DB/get_product.php";
-  static String checkout = "http://$ipAddress/streaming_DB/checkout.php";
-  static String history =
-      "http://$ipAddress/streaming_DB/get_history.php?id_user=";
-  static String transfer = "http://$ipAddress/streaming_DB/bukti_transfer.php";
-  static String deleteRiwayat =
-      "http://$ipAddress/streaming_DB/delete_riwayat.php";
+  static String ipAddress = "192.168.0.107";
+  static String apiRegister = "http://$ipAddress:8000/api/register";
+  static String apiLogin = "http://$ipAddress:8000/api/login";
+  static String getProduct = "http://$ipAddress:8000/api/getproduct";
+  static String checkout = "http://$ipAddress:8000/api/checkout";
+  static String history = "http://$ipAddress:8000/api/gethistory/";
+  static String transfer = "http://$ipAddress:8000/api/buktitransfer";
+  static String deleteRiwayat = "http://$ipAddress:8000/api/deleteriwayat";
 }
